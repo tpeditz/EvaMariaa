@@ -11,10 +11,13 @@ from database.filters_mdb import(
 from database.connections_mdb import active_connection
 from utils import get_file_id, parser, split_quotes
 from info import ADMINS
-
+from forcesub import forcesub
 
 @Client.on_message(filters.command(['filter', 'add']) & filters.incoming)
 async def addfilter(client, message):
+    fsub = await forcesub(client, message)
+    if fsub:
+        return
     userid = message.from_user.id if message.from_user else None
     if not userid:
         return await message.reply(f"You are anonymous admin. Use /connect {message.chat.id} in PM")
@@ -118,7 +121,9 @@ async def addfilter(client, message):
 
 @Client.on_message(filters.command(['viewfilters', 'filters']) & filters.incoming)
 async def get_all(client, message):
-    
+    fsub = await forcesub(client, message)
+    if fsub:
+        return
     chat_type = message.chat.type
     userid = message.from_user.id if message.from_user else None
     if not userid:
@@ -182,6 +187,9 @@ async def get_all(client, message):
         
 @Client.on_message(filters.command('del') & filters.incoming)
 async def deletefilter(client, message):
+    fsub = await forcesub(client, message)
+    if fsub:
+        return
     userid = message.from_user.id if message.from_user else None
     if not userid:
         return await message.reply(f"You are anonymous admin. Use /connect {message.chat.id} in PM")
@@ -233,6 +241,9 @@ async def deletefilter(client, message):
 
 @Client.on_message(filters.command('delall') & filters.incoming)
 async def delallconfirm(client, message):
+    fsub = await forcesub(client, message)
+    if fsub:
+        return
     userid = message.from_user.id if message.from_user else None
     if not userid:
         return await message.reply(f"You are anonymous admin. Use /connect {message.chat.id} in PM")

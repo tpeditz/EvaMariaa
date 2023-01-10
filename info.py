@@ -10,6 +10,11 @@ def is_enabled(value, default):
     else:
         return default
 
+
+# Force sub channel
+FSUB_CHANNEL = int(environ['FSUB_CHANNEL'])
+FSUUB_TEXT = environ['FSUB_TEXT']
+
 # Bot information
 SESSION = environ.get('SESSION', 'Media_search')
 API_ID = int(environ['API_ID'])

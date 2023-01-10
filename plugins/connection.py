@@ -3,6 +3,7 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from database.connections_mdb import add_connection, all_connections, if_active, delete_connection
 from info import ADMINS
 import logging
+from forcesub import forcesub
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
@@ -10,6 +11,9 @@ logger.setLevel(logging.ERROR)
 
 @Client.on_message((filters.private | filters.group) & filters.command('connect'))
 async def addconnection(client, message):
+    fsub = await forcesub(client, message)
+    if fsub:
+        return
     userid = message.from_user.id if message.from_user else None
     if not userid:
         return await message.reply(f"You are anonymous admin. Use /connect {message.chat.id} in PM")
@@ -81,6 +85,9 @@ async def addconnection(client, message):
 
 @Client.on_message((filters.private | filters.group) & filters.command('disconnect'))
 async def deleteconnection(client, message):
+    fsub = await forcesub(client, message)
+    if fsub:
+        return
     userid = message.from_user.id if message.from_user else None
     if not userid:
         return await message.reply(f"You are anonymous admin. Use /connect {message.chat.id} in PM")
@@ -109,6 +116,9 @@ async def deleteconnection(client, message):
 
 @Client.on_message(filters.private & filters.command(["connections"]))
 async def connections(client, message):
+    fsub = await forcesub(client, message)
+    if fsub:
+        return
     userid = message.from_user.id
 
     groupids = await all_connections(str(userid))

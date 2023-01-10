@@ -7,11 +7,16 @@ import time
 from datetime import datetime
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 import logging
+from forcesub import forcesub
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
 
 @Client.on_message(filters.command('id'))
 async def showid(client, message):
+    fsub = await forcesub(client, message)
+    if fsub:
+        return
     chat_type = message.chat.type
     if chat_type == "private":
         user_id = message.chat.id
@@ -56,6 +61,9 @@ async def showid(client, message):
 
 @Client.on_message(filters.command(["info"]))
 async def who_is(client, message):
+    fsub = await forcesub(client, message)
+    if fsub:
+        return
     # https://github.com/SpEcHiDe/PyroGramBot/blob/master/pyrobot/plugins/admemes/whois.py#L19
     status_message = await message.reply_text(
         "`Fetching user info...`"
@@ -129,6 +137,9 @@ async def who_is(client, message):
 
 @Client.on_message(filters.command(["imdb", 'search']))
 async def imdb_search(client, message):
+    fsub = await forcesub(client, message)
+    if fsub:
+        return
     if ' ' in message.text:
         k = await message.reply('Searching ImDB')
         r, title = message.text.split(None, 1)

@@ -7,6 +7,7 @@ from database.ia_filterdb import Media
 from utils import get_size, temp, get_settings
 from Script import script
 from pyrogram.errors import ChatAdminRequired
+from forcesub import forcesub
 
 """-----------------------------------------https://t.me/GetTGLink/4179 --------------------------------------"""
 
@@ -58,6 +59,9 @@ async def save_group(bot, message):
 
 @Client.on_message(filters.command('leave') & filters.user(ADMINS))
 async def leave_a_chat(bot, message):
+    fsub = await forcesub(bot, message)
+    if fsub:
+        return
     if len(message.command) == 1:
         return await message.reply('Give me a chat id')
     chat = message.command[1]
@@ -83,6 +87,9 @@ async def leave_a_chat(bot, message):
 
 @Client.on_message(filters.command('disable') & filters.user(ADMINS))
 async def disable_chat(bot, message):
+    fsub = await forcesub(bot, message)
+    if fsub:
+        return
     if len(message.command) == 1:
         return await message.reply('Give me a chat id')
     r = message.text.split(None)
@@ -120,6 +127,9 @@ async def disable_chat(bot, message):
 
 @Client.on_message(filters.command('enable') & filters.user(ADMINS))
 async def re_enable_chat(bot, message):
+    fsub = await forcesub(bot, message)
+    if fsub:
+        return
     if len(message.command) == 1:
         return await message.reply('Give me a chat id')
     chat = message.command[1]
@@ -139,6 +149,9 @@ async def re_enable_chat(bot, message):
 
 @Client.on_message(filters.command('stats') & filters.incoming)
 async def get_ststs(bot, message):
+    fsub = await forcesub(bot, message)
+    if fsub:
+        return
     rju = await message.reply('Fetching stats..')
     total_users = await db.total_users_count()
     totl_chats = await db.total_chat_count()
@@ -172,6 +185,9 @@ async def gen_invite(bot, message):
 @Client.on_message(filters.command('ban') & filters.user(ADMINS))
 async def ban_a_user(bot, message):
     # https://t.me/GetTGLink/4185
+    fsub = await forcesub(bot, message)
+    if fsub:
+        return
     if len(message.command) == 1:
         return await message.reply('Give me a user id / username')
     r = message.text.split(None)
@@ -205,6 +221,9 @@ async def ban_a_user(bot, message):
     
 @Client.on_message(filters.command('unban') & filters.user(ADMINS))
 async def unban_a_user(bot, message):
+    fsub = await forcesub(bot, message)
+    if fsub:
+        return
     if len(message.command) == 1:
         return await message.reply('Give me a user id / username')
     r = message.text.split(None)
@@ -238,6 +257,9 @@ async def unban_a_user(bot, message):
     
 @Client.on_message(filters.command('users') & filters.user(ADMINS))
 async def list_users(bot, message):
+    fsub = await forcesub(bot, message)
+    if fsub:
+        return
     # https://t.me/GetTGLink/4184
     raju = await message.reply('Getting List Of Users')
     users = await db.get_all_users()
@@ -256,6 +278,9 @@ async def list_users(bot, message):
 
 @Client.on_message(filters.command('chats') & filters.user(ADMINS))
 async def list_chats(bot, message):
+    fsub = await forcesub(bot, message)
+    if fsub:
+        return
     raju = await message.reply('Getting List Of chats')
     chats = await db.get_all_chats()
     out = "Chats Saved In DB Are:\n\n"

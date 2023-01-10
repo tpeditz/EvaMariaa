@@ -14,12 +14,17 @@ from database.connections_mdb import active_connection
 import re
 import json
 import base64
+from forcesub import forcesub
+
 logger = logging.getLogger(__name__)
 
 BATCH_FILES = {}
 
 @Client.on_message(filters.command("start") & filters.incoming & ~filters.edited)
 async def start(client, message):
+    fsub = await forcesub(client, message)
+    if fsub:
+        return
     if message.chat.type in ['group', 'supergroup']:
         buttons = [
             [
@@ -250,8 +255,10 @@ async def start(client, message):
 
 @Client.on_message(filters.command('channel') & filters.user(ADMINS))
 async def channel_info(bot, message):
-           
     """Send basic information of channel"""
+    fsub = await forcesub(bot, message)
+    if fsub:
+        return
     if isinstance(CHANNELS, (int, str)):
         channels = [CHANNELS]
     elif isinstance(CHANNELS, list):
@@ -282,6 +289,9 @@ async def channel_info(bot, message):
 @Client.on_message(filters.command('logs') & filters.user(ADMINS))
 async def log_file(bot, message):
     """Send log file"""
+    fsub = await forcesub(bot, message)
+    if fsub:
+        return
     try:
         await message.reply_document('TelegramBot.log')
     except Exception as e:
@@ -290,6 +300,9 @@ async def log_file(bot, message):
 @Client.on_message(filters.command('delete') & filters.user(ADMINS))
 async def delete(bot, message):
     """Delete file from database"""
+    fsub = await forcesub(bot, message)
+    if fsub:
+        return
     reply = message.reply_to_message
     if reply and reply.media:
         msg = await message.reply("Processing...⏳", quote=True)
@@ -337,6 +350,9 @@ async def delete(bot, message):
 
 @Client.on_message(filters.command('deleteall') & filters.user(ADMINS))
 async def delete_all_index(bot, message):
+    fsub = await forcesub(bot, message)
+    if fsub:
+        return
     await message.reply_text(
         'This will delete all indexed files.\nDo you want to continue??',
         reply_markup=InlineKeyboardMarkup(
@@ -366,6 +382,9 @@ async def delete_all_index_confirm(bot, message):
 
 @Client.on_message(filters.command('settings'))
 async def settings(client, message):
+    fsub = await forcesub(client, message)
+    if fsub:
+        return
     userid = message.from_user.id if message.from_user else None
     if not userid:
         return await message.reply(f"You are anonymous admin. Use /connect {message.chat.id} in PM")
@@ -480,6 +499,9 @@ async def settings(client, message):
 
 @Client.on_message(filters.command('set_template'))
 async def save_template(client, message):
+    fsub = await forcesub(client, message)
+    if fsub:
+        return
     sts = await message.reply("Checking template")
     userid = message.from_user.id if message.from_user else None
     if not userid:
